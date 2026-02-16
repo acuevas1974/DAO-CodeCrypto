@@ -31,7 +31,7 @@ const localhostChain = defineChain({
 
 const DAO_ABI = [
   { inputs: [], name: "proposalCount", outputs: [{ name: "", type: "uint256" }], stateMutability: "view", type: "function" },
-  { inputs: [{ name: "", type: "uint256" }], name: "getProposal", outputs: [{ name: "", type: "tuple", components: [{ name: "id", type: "uint256" }, { name: "amount", type: "uint256" }, { name: "recipient", type: "address" }, { name: "deadline", type: "uint256" }, { name: "forVotes", type: "uint256" }, { name: "againstVotes", type: "uint256" }, { name: "abstainVotes", type: "uint256" }, { name: "status", type: "uint8" }] }], stateMutability: "view", type: "function" },
+  { inputs: [{ name: "", type: "uint256" }], name: "getProposal", outputs: [{ name: "", type: "tuple", components: [{ name: "id", type: "uint256" }, { name: "amount", type: "uint256" }, { name: "recipient", type: "address" }, { name: "deadline", type: "uint256" }, { name: "description", type: "string" }, { name: "forVotes", type: "uint256" }, { name: "againstVotes", type: "uint256" }, { name: "abstainVotes", type: "uint256" }, { name: "status", type: "uint8" }] }], stateMutability: "view", type: "function" },
   { inputs: [], name: "SECURITY_PERIOD", outputs: [{ name: "", type: "uint256" }], stateMutability: "view", type: "function" },
   { inputs: [{ name: "proposalId", type: "uint256" }], name: "executeProposal", outputs: [], stateMutability: "nonpayable", type: "function" },
 ];

@@ -32,6 +32,7 @@ export function CreateProposal({ onProposalCreated }: CreateProposalProps = {}) 
   const publicClient = usePublicClient();
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
   const [deadlineDays, setDeadlineDays] = useState("7");
   const [blockTimestamp, setBlockTimestamp] = useState<bigint | null>(null);
 
@@ -64,7 +65,7 @@ export function CreateProposal({ onProposalCreated }: CreateProposalProps = {}) 
   const tenPercent = totalBalance > BigInt(0) ? totalBalance / BigInt(10) : BigInt(0);
   // El contrato requiere: myBalance > total / 10 (estrictamente mayor)
   const canCreate = totalBalance > BigInt(0) && balance > tenPercent;
-  const formValid = canCreate && isValidAddress(recipient) && amountWei > BigInt(0) && deadlineTimestamp > now;
+  const formValid = canCreate && isValidAddress(recipient) && amountWei > BigInt(0) && deadlineTimestamp > now && description.trim().length > 0;
 
   const { writeContract, data: hash, isPending: isWritePending, error: writeError, reset: resetWrite } = useWriteContract();
   const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash });
@@ -75,6 +76,7 @@ export function CreateProposal({ onProposalCreated }: CreateProposalProps = {}) 
       onProposalCreated?.();
       setRecipient("");
       setAmount("");
+      setDescription("");
       setDeadlineDays("7");
     }
   }, [isSuccess, onProposalCreated, queryClient]);
@@ -109,7 +111,7 @@ export function CreateProposal({ onProposalCreated }: CreateProposalProps = {}) 
       address: daoAddress, 
       abi: daoVotingAbi, 
       functionName: "createProposal", 
-      args: [recipient as `0x${string}`, amountWei, deadlineTimestamp],
+      args: [recipient as `0x${string}`, amountWei, deadlineTimestamp, description.trim()],
       chainId: 31337,
     });
   };
@@ -130,6 +132,8 @@ export function CreateProposal({ onProposalCreated }: CreateProposalProps = {}) 
       <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Crear propuesta</h2>
       {!canCreate && isConnected && totalBalance > BigInt(0) && <p className="text-sm text-amber-600 dark:text-amber-400">Necesitas más del 10% del balance total del DAO para crear propuestas.</p>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Descripción</label>
+        <textarea placeholder="De qué trata esta propuesta..." value={description} onChange={(e) => setDescription(e.target.value)} rows={3} className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100" />
         <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Dirección del beneficiario</label>
         <input type="text" placeholder="0x..." value={recipient} onChange={(e) => setRecipient(e.target.value)} className="rounded-lg border border-zinc-300 bg-white px-3 py-2 font-mono text-sm dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100" />
         <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Cantidad (ETH)</label>

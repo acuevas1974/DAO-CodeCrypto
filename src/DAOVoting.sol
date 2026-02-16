@@ -33,6 +33,7 @@ contract DAOVoting is ERC2771Context {
         uint256 amount;       // ETH a transferir
         address recipient;   // beneficiario
         uint256 deadline;    // timestamp límite de votación
+        string description; // descripción de la propuesta
         uint256 forVotes;
         uint256 againstVotes;
         uint256 abstainVotes;
@@ -119,9 +120,10 @@ contract DAOVoting is ERC2771Context {
      * @param recipient Dirección que recibiría los fondos si se aprueba y ejecuta.
      * @param amount Cantidad de ETH a transferir.
      * @param deadline Timestamp límite para votar (debe ser futuro).
+     * @param description Texto que describe de qué trata la propuesta.
      * @dev Solo usuarios con balance > 10% del balance total del DAO pueden crear.
      */
-    function createProposal(address recipient, uint256 amount, uint256 deadline) external returns (uint256 proposalId) {
+    function createProposal(address recipient, uint256 amount, uint256 deadline, string calldata description) external returns (uint256 proposalId) {
         address sender = _msgSender();
         uint256 total = _getTotalBalance();
         uint256 myBalance = _getUserBalance(sender);
@@ -138,6 +140,7 @@ contract DAOVoting is ERC2771Context {
         p.amount = amount;
         p.recipient = recipient;
         p.deadline = deadline;
+        p.description = description;
         p.forVotes = 0;
         p.againstVotes = 0;
         p.abstainVotes = 0;

@@ -81,7 +81,7 @@ contract DAOVotingTest is Test {
 
         uint256 deadline = block.timestamp + 7 days;
         vm.prank(alice);
-        uint256 id = dao.createProposal(bob, 1 ether, deadline);
+        uint256 id = dao.createProposal(bob, 1 ether, deadline, "Proposal test");
 
         assertEq(id, 1);
         assertEq(dao.proposalCount(), 1);
@@ -91,6 +91,7 @@ contract DAOVotingTest is Test {
         assertEq(p.amount, 1 ether);
         assertEq(p.recipient, bob);
         assertEq(p.deadline, deadline);
+        assertEq(p.description, "Proposal test");
         assertEq(p.forVotes, 0);
         assertEq(p.againstVotes, 0);
         assertEq(p.abstainVotes, 0);
@@ -108,7 +109,7 @@ contract DAOVotingTest is Test {
         uint256 deadline = block.timestamp + 7 days;
         vm.prank(alice);
         vm.expectRevert("DAOVoting: need > 10% of total balance to create proposal");
-        dao.createProposal(bob, 1 ether, deadline);
+        dao.createProposal(bob, 1 ether, deadline, "Proposal test");
     }
 
     function test_CreateProposal_RevertsWhenDaoHasNoFunds() public {
@@ -116,7 +117,7 @@ contract DAOVotingTest is Test {
         uint256 deadline = block.timestamp + 7 days;
         vm.prank(alice);
         vm.expectRevert("DAOVoting: DAO has no funds");
-        dao.createProposal(bob, 1 ether, deadline);
+        dao.createProposal(bob, 1 ether, deadline, "Proposal test");
     }
 
     function test_CreateProposal_RevertsWhenRecipientZero() public {
@@ -126,7 +127,7 @@ contract DAOVotingTest is Test {
         uint256 deadline = block.timestamp + 7 days;
         vm.prank(alice);
         vm.expectRevert("DAOVoting: recipient is zero");
-        dao.createProposal(address(0), 1 ether, deadline);
+        dao.createProposal(address(0), 1 ether, deadline, "");
     }
 
     function test_CreateProposal_RevertsWhenAmountZero() public {
@@ -136,7 +137,7 @@ contract DAOVotingTest is Test {
         uint256 deadline = block.timestamp + 7 days;
         vm.prank(alice);
         vm.expectRevert("DAOVoting: amount must be > 0");
-        dao.createProposal(bob, 0, deadline);
+        dao.createProposal(bob, 0, deadline, "");
     }
 
     function test_CreateProposal_RevertsWhenDeadlineNotInFuture() public {
@@ -146,7 +147,7 @@ contract DAOVotingTest is Test {
         uint256 pastDeadline = block.timestamp - 1;
         vm.prank(alice);
         vm.expectRevert("DAOVoting: deadline must be in the future");
-        dao.createProposal(bob, 1 ether, pastDeadline);
+        dao.createProposal(bob, 1 ether, pastDeadline, "");
     }
 
     function test_CreateProposal_IncrementsId() public {
@@ -156,9 +157,9 @@ contract DAOVotingTest is Test {
         uint256 deadline = block.timestamp + 7 days;
 
         vm.prank(alice);
-        uint256 id1 = dao.createProposal(bob, 1 ether, deadline);
+        uint256 id1 = dao.createProposal(bob, 1 ether, deadline, "Proposal test");
         vm.prank(alice);
-        uint256 id2 = dao.createProposal(bob, 2 ether, deadline + 1 days);
+        uint256 id2 = dao.createProposal(bob, 2 ether, deadline + 1 days, "Second");
 
         assertEq(id1, 1);
         assertEq(id2, 2);
@@ -175,7 +176,7 @@ contract DAOVotingTest is Test {
         dao.fundDAO{ value: 10 ether }();
         deadline = block.timestamp + 7 days;
         vm.prank(alice);
-        proposalId = dao.createProposal(bob, 1 ether, deadline);
+        proposalId = dao.createProposal(bob, 1 ether, deadline, "Proposal test");
     }
 
     function test_Vote_For_UpdatesCountsAndGetVote() public {

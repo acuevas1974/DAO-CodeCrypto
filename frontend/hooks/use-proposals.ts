@@ -41,6 +41,19 @@ export function useProposals() {
   const proposals: Proposal[] = (results ?? [])
     .map((r) => (r.status === "success" ? (r.result as Proposal) : null))
     .filter((p): p is Proposal => p != null);
+
+  // Si hay propuestas en el contrato pero ninguna se decodificó, el contrato desplegado
+  // puede ser una versión antigua (8 campos sin description). Redeploy + actualizar .env.local.
+  if (num > 0 && proposals.length === 0 && (results?.length ?? 0) > 0) {
+    const failed = results!.filter((r) => r.status !== "success").length;
+    console.warn(
+      "[useProposals] Hay",
+      num,
+      "propuesta(s) en el contrato pero ninguna se pudo decodificar (fallos:",
+      failed,
+      "). ¿Redeployaste el DAO después de añadir el campo description? Actualiza NEXT_PUBLIC_DAO_ADDRESS en .env.local."
+    );
+  }
   
   useEffect(() => {
     if (num > 0 && contracts.length > 0) {

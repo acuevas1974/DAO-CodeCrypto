@@ -97,6 +97,10 @@ export function ProposalCard({ proposal, onVoteSuccess }: ProposalCardProps) {
         </span>
       </div>
       <div className="grid gap-1 text-sm">
+        <div className="col-span-full rounded-lg bg-zinc-50 p-2 dark:bg-zinc-800/50">
+          <span className="text-zinc-500 dark:text-zinc-400">Descripción</span>
+          <p className="mt-1 text-zinc-800 dark:text-zinc-200">{proposal.description?.trim() || "—"}</p>
+        </div>
         <div className="flex justify-between">
           <span className="text-zinc-500 dark:text-zinc-400">Beneficiario</span>
           <span className="font-mono">{formatAddress(proposal.recipient)}</span>

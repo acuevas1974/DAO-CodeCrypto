@@ -37,7 +37,7 @@ contract DAOGaslessFlowTest is Test {
         dao.fundDAO{ value: 10 ether }();
         deadline = block.timestamp + 7 days;
         vm.prank(alice);
-        proposalId = dao.createProposal(bob, 1 ether, deadline);
+        proposalId = dao.createProposal(bob, 1 ether, deadline, "Gasless test");
 
         vm.deal(bob, 1 ether);
         vm.prank(bob);
@@ -188,7 +188,7 @@ contract DAOGaslessFlowTest is Test {
         dao.fundDAO{ value: 10 ether }();
         uint256 deadline = block.timestamp + 7 days;
         vm.prank(alice);
-        uint256 proposalId = dao.createProposal(bob, 1 ether, deadline);
+        uint256 proposalId = dao.createProposal(bob, 1 ether, deadline, "Gasless test");
 
         // Bob no ha depositado aún. Primero hace fundDAO() via meta-tx.
         vm.deal(bob, 1 ether);
